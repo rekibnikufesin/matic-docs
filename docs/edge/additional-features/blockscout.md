@@ -1,7 +1,7 @@
 ---
 id: blockscout 
 title: Blockscout
-description: How to setup a Blockscout instance to work with Polygon Edge.
+description: How to set up a Blockscout instance to work with Polygon Edge.
 keywords:
   - docs
   - polygon
@@ -19,31 +19,26 @@ Blockscout has its own [documentation](https://docs.blockscout.com/for-developer
 ## Environment
 * Operating System: Ubuntu Server 20.04 LTS [download link](https://releases.ubuntu.com/20.04/) with sudo permissions
 * Server Hardware:  2CPU / 4GB RAM / 50GB HDD (LVM)
-* Database Server:  Dedicated server with 2 CPU / 4GB RAM / 30GB SSD / PostresSQL 13.4
+* Database Server:  Dedicated server with 2 CPU / 4GB RAM / 30GB SSD / PostgreSQL 13.4
 
 ### DB Server
 The requirement for following this guide is to have a database server ready, database and db user configured.
-This guide will not go into details on how to deploy and configure PosgreSQL server.
+This guide will not go into details on how to deploy and configure PostgreSQL server.
 There are plenty of guides on now to do this, for example [DigitalOcean Guide](https://www.digitalocean.com/community/tutorials/how-to-install-postgresql-on-ubuntu-20-04-quickstart)
 
-:::info DISCLAMER
+:::info DISCLAIMER
 This guide is meant only to help you to get Blockscout up and running on a single instance which is not ideal production setup.   
 For production, you'll probably want to introduce reverse proxy, load balancer, scalability options, etc. into the architecture.
 :::
 
 # Blockscout Deployment Procedure
 
-## Part 1 - install dependancies
+## Part 1 - install dependencies
 Before we start we need to make sure we have all the binaries installed that the blockscout is dependent on.
 
 ### Update & upgrade system
 ```bash
-sudo apt update && sudo apt -y upgrade
-```
-
-### Install erlang and its dependancies from default packages
-```bash
-sudo apt -y install erlang
+sudo apt -y update && sudo apt -y upgrade
 ```
 
 ### Add erlang repos
@@ -66,7 +61,7 @@ rm erlang_solutions.asc
 
 ### Add NodeJS repo
 ```bash
-sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+sudo curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 ```
 
 ### Install Rust
@@ -74,9 +69,18 @@ sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
 sudo curl https://sh.rustup.rs -sSf | sh -s -- -y
 ```
 
-### Install specific versions of Erlang and Elixir
+### Install required version of Erlang
 ```bash
-sudo apt -y install esl-erlang=1:24.* elixir=1.12.*
+sudo apt -y install esl-erlang=1:24.*
+```
+
+### Install required version of Elixir
+```bash
+sudo apt -y install elixir=1.13.*
+```
+### Install other erlang dependencies
+```bash
+sudo apt -y install erlang-dev erlang-parsetools
 ```
 
 ### Install NodeJS
@@ -89,14 +93,14 @@ sudo apt -y install nodejs
 sudo apt -y install cargo
 ```
 
-### Install other dependancies
+### Install other dependencies
 ```bash
 sudo apt -y install automake libtool inotify-tools gcc libgmp-dev make g++ git
 ```
 
-### Optionaly install postgresql client to check your db connection
+### Optionally install postgresql client to check your db connection
 ```bash
-sudo apt -y postgresql-client
+sudo apt install -y postgresql-client
 ```
 
 ## Part 2 - set environment variables
@@ -104,25 +108,17 @@ We need to set the environment variables, before we begin with Blockscout compil
 In this guide we'll set only the basic minimum to get it working.
 Full list of variables that can be set you can find [here](https://docs.blockscout.com/for-developers/information-and-settings/env-variables)
 
-### Set env vars
+### Set database connection as environment variable
 ```bash
-# example:  ETHEREUM_JSONRPC_HTTP_URL=https://rpc.poa.psdk.io:8545
-export  ETHEREUM_JSONRPC_HTTP_URL=<your polygon-edge json-rpc endpoint>
-# example: ETHEREUM_JSONRPC_TRACE_URL=https://rpc.poa.psdk.io:8545
-export ETHEREUM_JSONRPC_TRACE_URL=<your polygon-edge json-rpc endpoint>
-# example: ETHEREUM_JSONRPC_WS_URL=wss://rpc.poa.psdk.io:8545/ws
-export ETHEREUM_JSONRPC_WS_URL=<your polygon-edge websocket endpoint>
-# used for automaticaly restarting the service if it crashes
-export HEART_COMMAND="systemctl start explorer.service"
 # postgresql connection example:  DATABASE_URL=postgresql://blockscout:Passw0Rd@db.instance.local:5432/blockscout
-export DATABASE_URL=postgresql://<db_user>:<db_pass>@<db_host>:<db_port>/<db_name>
-# secret key base as per docs https://docs.blockscout.com/for-developers/manual-deployment ( Step 4 )
-export SECRET_KEY_BASE=VTIB3uHDNbvrY0+60ZWgUoUBKDn9ppLR8MI4CpRz4/qLyEFs54ktJfaNT6Z221No
+export DATABASE_URL=postgresql://<db_user>:<db_pass>@<db_host>:<db_port>/<db_name> # db_name does not have to be existing database
+export MIX_ENV="prod" # compile in production mode
 
-# we set these env vars to test the db connection
+# we set these env vars to test the db connection with psql
 export PGPASSWORD=Passw0Rd
 export PGUSER=blockscout
 export PGHOST=db.instance.local
+export PGDATABASE=postgres # on AWS RDS postgres database is always created
 ```
 
 Now test your DB connection with provided parameters.
@@ -158,12 +154,12 @@ Shall the new role be a superuser? (y/n) y
 ```
 
 ## Part 3 - clone and compile Blockscout
-Now we finaly get to start the Blockscout installation.
+Now we finally get to start the Blockscout installation.
 
 ### Clone Blockscout repo
 ```bash
 cd ~
-git clone https://github.com/poanetwork/blockscout.git
+git clone https://github.com/Trapesys/blockscout
 ```
 
 ### Compile 
@@ -175,16 +171,26 @@ mix local.hex --force
 mix do deps.get, local.rebar --force, deps.compile, compile
 ```
 
+:::info
+If you have deployed previously, remove static assets from the previous build ***mix phx.digest.clean***.
+:::
+
 ### Migrate databases
 :::info 
-This part will fail if you didn't setup your DB connection properly, you didn't provide or you've defined wrong parameters at DATABASE_URL environment variable.
+This part will fail if you didn't set up your DB connection properly, you didn't provide, 
+or you've defined wrong parameters at DATABASE_URL environment variable.
 The database user needs to have superuser privileges.
 :::
 ```bash
 mix do ecto.create, ecto.migrate
 ```
 
-### Install npm dependancies and compile frontend assets
+If you need to drop the database first, run
+```bash
+mix do ecto.drop, ecto.create, ecto.migrate
+```
+
+### Install npm dependencies and compile frontend assets
 You need to change directory to the folder which contains frontend assets.
 
 ```bash
@@ -213,7 +219,7 @@ mix phx.gen.cert blockscout blockscout.local
 ```
 
 ## Part 4 - create and run Blockscout service
-In this part we need to setup a system service as we want Blockscout to run in the backround and persist after system reboot.
+In this part we need to set up a system service as we want Blockscout to run in the background and persist after system reboot.
 
 ### Create service file
 ```bash
@@ -226,7 +232,7 @@ Use your favorite linux text editor to edit this file and configure the service.
 sudo vi /etc/systemd/system/explorer.service
 ```
 The contents of the explorer.service file should look like this:
-```
+```bash
 [Unit]
 Description=Blockscout Server
 After=network.target
@@ -253,16 +259,13 @@ sudo systemctl daemon-reload
 sudo systemctl enable explorer.service
 ```
 
-### Move your Blockscout clone folder to system wide location
+### Move your Blockscout clone folder to system-wide location
 Blockscout service needs to have access to the folder you've cloned from Blockscout repo and compiled all the assets.
 ```bash
 sudo mv ~/blockscout /usr/local
 ```
 
 ### Create env vars file which will be used by Blockscout service
-:::info
-Use the same environment variables as you've set in Part 2.
-:::
 
 ```bash
 sudo touch /usr/local/blockscout/env_vars.env
@@ -270,26 +273,45 @@ sudo touch /usr/local/blockscout/env_vars.env
 sudo vi /usr/local/blockscout/env_vars.env
 
 # env_vars.env file should hold these values ( adjusted for your environment )
-ETHEREUM_JSONRPC_HTTP_URL=https://rpc.poa.psdk.io:8545
-ETHEREUM_JSONRPC_TRACE_URL=https://rpc.poa.psdk.io:8545
-DATABASE_URL=postgresql://blockscout:Passw0Rd@db.instance.local:5432/blockscout
-SECRET_KEY_BASE=VTIB3uHDNbvrY0+60ZWgUoUBKDn9ppLR8MI4CpRz4/qLyEFs54ktJfaNT6Z221No
-HEART_COMMAND="systemctl start explorer.service"
-
-# these environment variables disable debug tracing as it is not currently supported in Polygon Edge
-TRACE_FIRST_BLOCK=false
-TRACE_LAST_BLOCK=false
-INDEXER_DISABLE_INTERNAL_TRANSACTIONS_FETCHER=true
+ETHEREUM_JSONRPC_HTTP_URL="localhost:8545"  # json-rpc API of the chain
+ETHEREUM_JSONRPC_TRACE_URL="localhost:8545" # same as json-rpc API 
+DATABASE_URL='postgresql://blockscout:Passw0Rd@db.instance.local:5432/blockscout' # database connection from Step 2
+SECRET_KEY_BASE="LI/i2DqKx/ZQTGZeGUdi6dOjrDNsNDeqXjzc6sddNYrFLlIGERsK2TlTqCrsUf3p" # secret key base 
+ETHEREUM_JSONRPC_WS_URL="ws://localhost:8545/ws" # websocket API of the chain
+CHAIN_ID=93201 # chain id
+HEART_COMMAND="systemctl restart explorer" # command used by blockscout to restart it self in case of failure
+SUBNETWORK="Supertestnet POA" # this will be in html title
+LOGO="/images/polygon_edge_logo.svg" # logo location
+LOGO_FOOTER="/images/polygon_edge_logo.svg" # footer logo location
+COIN="EDGE" # coin
+COIN_NAME="EDGE Coin" # name of the coin
+INDEXER_DISABLE_BLOCK_REWARD_FETCHER="true" # disable block reward indexer as Polygon Edge doesn't support tracing
+INDEXER_DISABLE_PENDING_TRANSACTIONS_FETCHER="true" # disable pending transactions indexer as Polygon Edge doesn't support tracing
+INDEXER_DISABLE_INTERNAL_TRANSACTIONS_FETCHER="true" # disable internal transactions indexer as Polygon Edge doesn't support tracing
+MIX_ENV="prod" # run in production mode
+BLOCKSCOUT_PROTOCOL="http" # protocol to run blockscout web service on
+PORT=4000 # port to run blockscout service on
+DISABLE_EXCHANGE_RATES="true" # disable fetching of exchange rates
+POOL_SIZE=200 # the number of database connections
+POOL_SIZE_API=300 # the number of read-only database connections
+ECTO_USE_SSL="false" # if protocol is set to http this should be false 
+HEART_BEAT_TIMEOUT=60 # run HEARTH_COMMAND if heartbeat missing for this amount of seconds
+INDEXER_MEMORY_LIMIT="10Gb" # soft memory limit for indexer - depending on the size of the chain and the amount of RAM the server has
+FETCH_REWARDS_WAY="manual" # disable trace_block query 
+INDEXER_EMPTY_BLOCKS_SANITIZER_BATCH_SIZE=1000 # sanitize empty block in this batch size
 ```
+:::info
+In order to generate a new SECRET_KEY_BASE run  ***mix phx.gen.secret*** from blockscout folder.
+:::
 Save the file and exit.
 
-### Finaly start Blockscout service
+### Finally, start Blockscout service
 ```bash
 sudo systemctl start explorer.service
 ```
 
 ## Part 5 - test out the functionality of your Blockscout instance
-Now all thats left to do is to check if Blockscout service is running.
+Now all that's left to do is to check if Blockscout service is running.
 Check service status with:
 ```bash
 sudo systemctl status explorer.service
@@ -297,7 +319,7 @@ sudo systemctl status explorer.service
 
 To check service output:
 ```bash
-sudo journalctl -u explorer.service
+sudo journalctl -u explorer.service -f
 ```
 
 You can check if there are some new listening ports:
@@ -311,16 +333,15 @@ You should get a list of listening ports and on the list there should be somethi
 ```
 tcp        0      0 0.0.0.0:5432            0.0.0.0:*               LISTEN      28142/postgres
 tcp        0      0 0.0.0.0:4000            0.0.0.0:*               LISTEN      42148/beam.smp
-tcp        0      0 0.0.0.0:4001            0.0.0.0:*               LISTEN      42148/beam.smp
 ```
 
-Blockscout web service runs by default on ports `4000`(http) and `4001`(https).
-If everythig is ok, you should be able to access the Blockscout web portal with `http://<host_ip>:4000` or `https://<host_ip>:4001`
+Blockscout web service runs the port and protocol defined in env file. In this example it runs on `4000`(http).   
+If everything is ok, you should be able to access the Blockscout web portal with `http://<host_ip>:4000`.
 
 
 
 ## Final thoughts
 We've just deployed a single Blockscout instance, which works fine, but for production you should consider placing this instance behind a reverse proxy like Nginx.
-You sould also think about database and instance scalability, depending on your use case.
+You should also think about database and instance scalability, depending on your use case.
 
-You should definitely checkout the official [Blockscout documentation](https://docs.blockscout.com/) as there a lot of customisation options.
+You should definitely check out the official [Blockscout documentation](https://docs.blockscout.com/) as there a lot of customisation options.
