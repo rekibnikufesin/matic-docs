@@ -30,7 +30,7 @@ read APIs are very simple and returns result directly.
 
 ## 2. Write API
 
-Write APSs publish some data on the blockchain, so it consumes gas. Example of write APIs are - `approve`, `deposit` etc.
+Write APIs publish some data on the blockchain, so it consumes gas. Example of write APIs are - `approve`, `deposit` etc.
 
 When you are calling a write API - you need two data from the result.
 

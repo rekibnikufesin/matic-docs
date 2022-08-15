@@ -6,7 +6,7 @@ keywords:
 description: 'Retrieve all tokens owened by specified user.'
 ---
 
-`getAllTokens` method returns all tokens owened by specified user.
+`getAllTokens` method returns all tokens owned by specified user.
 
 ```
 const erc721Token = posClient.erc721(<token address>);

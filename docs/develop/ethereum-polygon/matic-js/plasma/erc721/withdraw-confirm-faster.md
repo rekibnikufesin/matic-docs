@@ -12,7 +12,6 @@ After this process is successful, challenge period is started and upon completio
 
 The challenge period is 7 days for mainnet.
 
- class="highlight mb-20px mt-20px">
 It is fast because it generates proof in backend. You need to configure [setProofAPI](/docs/develop/ethereum-polygon/matic-js/set-proof-api).
 
 ```
