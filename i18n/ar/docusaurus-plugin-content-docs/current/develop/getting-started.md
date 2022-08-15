@@ -133,7 +133,7 @@ const web3 = new Web3('https://polygon-mainnet.g.alchemy.com/v2/<your-api-key>')
 
 ### **Get Involved with Hackathons**
 
-Hackathons take place at blockchain conferences and meetups all over the world. Chances are you can’t hop on a plane on a moment’s notice, but some conferences or projects host virtual hackathons open to anyone with an internet connection. Check [Polygon's Hackathons Discord Channel](https://discord.gg/polygon)
+Hackathons take place at blockchain conferences and meetups all over the world. Chances are you can’t hop on a plane on a moment’s notice, but some conferences or projects host virtual hackathons open to anyone with an internet connection. Check [Polygon's Hackathons Discord Channel](https://discord.com/invite/0xPolygon)
 
 # **Keeping Up with Development**
 

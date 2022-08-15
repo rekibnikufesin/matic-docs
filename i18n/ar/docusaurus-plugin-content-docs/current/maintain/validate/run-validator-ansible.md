@@ -607,7 +607,7 @@ journalctl -u bor.service -f
 
 ## Check node health with the community
 
-Now that your sentry and validator nodes are synced and running, head over to [Discord](https://discord.gg/polygon) and ask the community to health-check your nodes.
+Now that your sentry and validator nodes are synced and running, head over to [Discord](https://discord.com/invite/0xPolygon) and ask the community to health-check your nodes.
 
 ## Proceed to staking
 

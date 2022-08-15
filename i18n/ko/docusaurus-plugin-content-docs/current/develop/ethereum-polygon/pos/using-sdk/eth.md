@@ -21,7 +21,7 @@ image: https://matic.network/banners/matic-network-16x9.png
 
 예를 들어 **RootChainManager** 주소 대신 상호 작용에 **RootChainManagerProxy** 주소를 사용하십시오. PoS 컨트랙트 주소, ABI, 테스트 토큰 주소와 같은 배포의 세부 정보는 [여기](https://docs.polygon.technology/docs/develop/ethereum-polygon/pos/deployment/)에서 찾을 수 있습니다.
 
-자산 매핑은 애플리케이션에 PoS 브리지를 통합하는 데 필요한 단계이므로 아직 수행하지 않은 경우 [여기](https://docs.polygon.technology/docs/develop/ethereum-polygon/submit-mapping-request/)에서 매핑 요청을 제출하세요. 이 자습서의 목적을 위해 팀은 테스트 토큰을 배포하고 이를 PoS 브리지에 매핑했습니다. [faucet](https://faucet.polygon.technology/)에서 사용하려는 자산을 요청하고 테스트 토큰을 사용할 수 없는 경우 [Discord](https://discord.gg/polygon)에서  팀에 문의하세요. 즉시 회신해 드리겠습니다.
+자산 매핑은 애플리케이션에 PoS 브리지를 통합하는 데 필요한 단계이므로 아직 수행하지 않은 경우 [여기](https://docs.polygon.technology/docs/develop/ethereum-polygon/submit-mapping-request/)에서 매핑 요청을 제출하세요. 이 자습서의 목적을 위해 팀은 테스트 토큰을 배포하고 이를 PoS 브리지에 매핑했습니다. [faucet](https://faucet.polygon.technology/)에서 사용하려는 자산을 요청하고 테스트 토큰을 사용할 수 없는 경우 [Discord](https://discord.com/invite/0xPolygon)에서  팀에 문의하세요. 즉시 회신해 드리겠습니다.
 
 다음 자습서에서는 몇 가지 코드 조각과 함께 모든 단계를 자세히 설명합니다. 그러나 PoS 브리지의 작동을 통합하고 이해하는 데 도움이 될 수 있는 모든 **예제 소스 코드**가 있는 이 [리포지토리](https://github.com/maticnetwork/matic.js/tree/master/examples)를 항상 참조할 수 있습니다.
 

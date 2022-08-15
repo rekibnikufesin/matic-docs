@@ -218,7 +218,7 @@ If the above steps didn’t work then please reach out to the Validator Team for
 
 This could happen when Bor has lost connectivity with other peers. Generally checking the `~/node/bor/start.sh` file should show you your bootnodes. Check if the bootnodes are entered correctly without any formatting issues. If you have made any changes to the file, then please restart your Bor service and check if the issue is resolved.
 
-If the issue persists, contact support team on [Discord](https://discord.gg/polygon).
+If the issue persists, contact support team on [Discord](https://discord.com/invite/0xPolygon).
 
 ## Bor shows "Failed to prepare header mining at block 0"
 
@@ -232,7 +232,7 @@ This is because you have not created the Bor keystore and the password file for 
 
 Let these logs be. Your node should ideally not suffer because of this and the issue should be automatically resolved.
 
-If your node is suffering because of this, please contact the support team on [Discord](https://discord.gg/polygon).
+If your node is suffering because of this, please contact the support team on [Discord](https://discord.com/invite/0xPolygon).
 
 ## Bor shows "Failed to prepare mining for header"
 
@@ -249,7 +249,7 @@ To resolve this there are 2 ways to do this:
 * Restart your Bor service and check if the issue is resolved. Usually restarting your Bor service should resolve the issue.
 * Check if your Heimdall is running correctly. If your Heimdall has stopped, restart your Heimdall service and let your Bor starty syncing and it should resolve the issue.
 
-If the issue is not resolved, contact support team on [Discord](https://discord.gg/polygon).
+If the issue is not resolved, contact support team on [Discord](https://discord.com/invite/0xPolygon).
 
 ## Bor shows "Address is required as argument"
 
@@ -274,11 +274,11 @@ For binaries:
 
 Your node not signing checkpoints could be for multiple reasons:
 
-1. Check if your Heimdall service is running correctly on your sentry and validator nodes. If the service has stopped abruptly or you see any errors, try restarting your Heimdall service and see it comes back to normal. If the issue persists, contact support team on [Discord](https://discord.gg/polygon).
-1. Check your Bor service and see if it has halted abruptly or there are any errors on the logs. Try restarting your Bor service to resolve this issue. If the issue persists, contact support team on [Discord](https://discord.gg/polygon).
-1. Check if your Heimdall Bridge is running or not or if it has any errors in the logs. Try restarting the service and see if the issue resolves. If the issue persists, contact support team on [Discord](https://discord.gg/polygon).
+1. Check if your Heimdall service is running correctly on your sentry and validator nodes. If the service has stopped abruptly or you see any errors, try restarting your Heimdall service and see it comes back to normal. If the issue persists, contact support team on [Discord](https://discord.com/invite/0xPolygon).
+1. Check your Bor service and see if it has halted abruptly or there are any errors on the logs. Try restarting your Bor service to resolve this issue. If the issue persists, contact support team on [Discord](https://discord.com/invite/0xPolygon).
+1. Check if your Heimdall Bridge is running or not or if it has any errors in the logs. Try restarting the service and see if the issue resolves. If the issue persists, contact support team on [Discord](https://discord.com/invite/0xPolygon).
 
-If none of this is the issue, contact support team on [Discord](https://discord.gg/polygon).
+If none of this is the issue, contact support team on [Discord](https://discord.com/invite/0xPolygon).
 
 ## How to set up a validator node on the mainnet?
 

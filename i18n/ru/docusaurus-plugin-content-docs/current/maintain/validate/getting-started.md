@@ -91,5 +91,5 @@ This section guides you through the following topics:
 
 Community assistance:
 
-* [Discord](https://discord.gg/polygon)
+* [Discord](https://discord.com/invite/0xPolygon)
 * [Forum](https://forum.polygon.technology/)

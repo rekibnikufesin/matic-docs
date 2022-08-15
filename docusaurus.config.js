@@ -91,6 +91,10 @@ module.exports = {
             to: '/docs/develop/wallets/getting-started',
             from: '/docs/develop/cexs-wallets/cexs',
           },
+          {
+            to: '/docs/maintain/glossary#validator',
+            from: '/docs/maintain/polygon-basics/glossary#validator',
+          }
         ],
         createRedirects: function (existingPath) {
           if (existingPath.startsWith('/docs/validate/')) {
@@ -309,7 +313,7 @@ module.exports = {
           position: "right",
           items: [
                   {
-                    href: 'https://discord.gg/tCmCbEff66',
+                    href: 'https://discord.com/invite/0xPolygon',
                     label: 'Discord',
                     target: '_blank',
                     rel: null,
