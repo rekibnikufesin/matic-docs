@@ -524,6 +524,7 @@ module.exports = {
           },
           items: [
             "develop/the-graph",
+            "develop/data/covalent",
             {
               type: "link",
               label: "Covalent",
