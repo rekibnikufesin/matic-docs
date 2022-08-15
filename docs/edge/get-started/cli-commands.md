@@ -92,6 +92,44 @@ Default address: `0.0.0.0:8545`.
 
 ---
 
+<h4><i>json-rpc-block-range-limit</i></h4>
+
+<Tabs>
+  <TabItem value="syntax" label="Syntax" default>
+
+    server [--json-rpc-block-range-limit BLOCK_RANGE]
+
+  </TabItem>
+  <TabItem value="example" label="Example">
+
+    server --json-rpc-block-range-limit 1500
+
+  </TabItem>
+</Tabs>
+
+Sets the maximum block range to be considered when executing json-rpc requests that include fromBlock/toBlock values (e.g. eth_getLogs). Default:`1000`.
+
+---
+
+<h4><i>json-rpc-batch-request-limit</i></h4>
+
+<Tabs>
+  <TabItem value="syntax" label="Syntax" default>
+
+    server [--json-rpc-batch-request-limit MAX_LENGTH]
+
+  </TabItem>
+  <TabItem value="example" label="Example">
+
+    server --json-rpc-batch-request-limit 50
+
+  </TabItem>
+</Tabs>
+
+Sets the maximum length to be considered when handling json-rpc batch requests. Default: `20`.
+
+---
+
 <h4><i>grpc</i></h4>
 
 <Tabs>

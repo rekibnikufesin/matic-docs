@@ -16,7 +16,7 @@ At the moment, Polygon Edge does not support EIP-1559.
 
 ## How to set the currency(token) symbol?
 
-The token symbol is just a UI thing, so it cannot be configured or harcoded anywhere in the network.
+The token symbol is just a UI thing, so it cannot be configured or hardcoded anywhere in the network.
 But you can change it when you add the network to a wallet, like Metamask, for example.
 
 

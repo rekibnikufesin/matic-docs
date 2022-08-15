@@ -20,7 +20,7 @@ Yes, you can. The default price limit that nodes enforce is `0`, meaning the nod
 
 ## How to set the gas(native) token total supply?
 
-You can set a premined balance to accounts (addreses) by using the `--premine flag`. Please note that this is a configuration from the genesis file, and it cannot be changed later.
+You can set a premined balance to the accounts (addresses) by using the `--premine flag`. Please note that this is a configuration from the genesis file, and it cannot be changed later.
 
 Example on how to use the `--premine flag`:
 

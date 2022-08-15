@@ -972,6 +972,7 @@ module.exports = {
               "edge/get-started/set-up-ibft-on-the-cloud",
               "edge/get-started/cli-commands",
               "edge/get-started/json-rpc-commands",
+              "edge/get-started/terraform-aws-deployment",
           ]
       },
       {

@@ -21,7 +21,7 @@ You can find a guide on how to stake funds [here](/docs/edge/consensus/pos-stake
 
 Please note that:
 - You can use the genesis flag `--max-validator-count` to set a maximum number of stakers that can join the validator set.
-- You can use the the genesis flag `--min-validator-count ` to set the minimum number of stakers needed to join the validator set(`1` by default).
+- You can use the genesis flag `--min-validator-count ` to set the minimum number of stakers needed to join the validator set(`1` by default).
 - When the maximum validator number is met, you cannot add another validator until you remove an existing one from the set (doesn't matter if the staked amount of the new one is higher). If you remove a validator, the number of validators remaining cannot be lower than `--min-validator-count`.
 - There is a default threshold of `1`  unit of native network(gas) currency for becoming a validator.
  
@@ -36,7 +36,7 @@ We recommend starting with 100G as a conservatively estimated runway, and making
 
 If we are talking about technical limitations, Polygon Edge doesn't explicitly have the cap on the number of nodes you can have in a network. You can set connection caps (inbound / outbound connection counts) on a per-node basis.
 
-If we are talking about practical limitations, you're gonna see a more degraded performance with a 100 node cluster than with a 10 node cluster. By increasing the number of nodes in your cluster, you increase the communication complexity and just the networking overhead in general. It all depends on what kind of network you are running, and what kind of network topology you have.
+If we are talking about practical limitations, you're going to see a more degraded performance with a 100 node cluster than with a 10 node cluster. By increasing the number of nodes in your cluster, you increase the communication complexity and just the networking overhead in general. It all depends on what kind of network you are running, and what kind of network topology you have.
 
 ## How to switch from PoA to PoS?
 
