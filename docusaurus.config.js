@@ -90,10 +90,6 @@ module.exports = {
           {
             to: '/docs/develop/wallets/getting-started',
             from: '/docs/develop/cexs-wallets/cexs',
-          },
-          {
-            to: '/docs/maintain/glossary#validator',
-            from: '/docs/maintain/polygon-basics/glossary#validator',
           }
         ],
         createRedirects: function (existingPath) {
