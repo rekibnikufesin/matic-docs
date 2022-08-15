@@ -18,8 +18,8 @@ Blockscout has its own [documentation](https://docs.blockscout.com/for-developer
 
 ## Environment
 * Operating System: Ubuntu Server 20.04 LTS [download link](https://releases.ubuntu.com/20.04/) with sudo permissions
-* Server Hardware:  2CPU / 4GB RAM / 50GB HDD (LVM)
-* Database Server:  Dedicated server with 2 CPU / 4GB RAM / 30GB SSD / PostgreSQL 13.4
+* Server Hardware:  8CPU / 16GB RAM / 50GB HDD (LVM)
+* Database Server:  Dedicated server with 2 CPU / 4GB RAM / 100GB SSD / PostgreSQL 13.4
 
 ### DB Server
 The requirement for following this guide is to have a database server ready, database and db user configured.
@@ -75,13 +75,38 @@ sudo apt -y install esl-erlang=1:24.*
 ```
 
 ### Install required version of Elixir
+Elixir must be version `1.13`. If we try and install this version from the official repo, 
+the `erlang` will update to `Erlang/OTP 25` and we do not want that.     
+Because of this, we need to install the specific precompiled `elixir` version from GitHub releases page.
+
 ```bash
-sudo apt -y install elixir=1.13.*
+cd ~
+mkdir /usr/local/elixir
+wget https://github.com/elixir-lang/elixir/releases/download/v1.13.4/Precompiled.zip
+sudo unzip -d /usr/local/elixir/ Precompiled.zip
+rm Precompiled.zip
 ```
-### Install other erlang dependencies
+
+Now we need to properly set up `exlixir` system binaries.   
 ```bash
-sudo apt -y install erlang-dev erlang-parsetools
+sudo ln -s /usr/local/elixir/bin/elixir /usr/local/bin/elixir
+sudo ln -s /usr/local/elixir/bin/mix /usr/local/bin/mix
+sudo ln -s /usr/local/elixir/bin/iex /usr/local/bin/iex
+sudo ln -s /usr/local/elixir/bin/elixirc /usr/local/bin/elixirc
 ```
+
+Check if `elixir` and `erlang` are properly installed by running `elixir -v`.
+This should be the output:
+```bash
+Erlang/OTP 24 [erts-12.3.1] [source] [64-bit] [smp:8:8] [ds:8:8:10] [async-threads:1] [jit]
+
+Elixir 1.13.4 (compiled with Erlang/OTP 22)
+```
+
+:::warning
+`Erlang/OTP` must be version `24` and `Elixir` must be version `1.13.*`.    
+If that is not the case, you will run into issues with compiling Blockscout and/or running it.
+:::
 
 ### Install NodeJS
 ```bash
@@ -112,7 +137,6 @@ Full list of variables that can be set you can find [here](https://docs.blocksco
 ```bash
 # postgresql connection example:  DATABASE_URL=postgresql://blockscout:Passw0Rd@db.instance.local:5432/blockscout
 export DATABASE_URL=postgresql://<db_user>:<db_pass>@<db_host>:<db_port>/<db_name> # db_name does not have to be existing database
-export MIX_ENV="prod" # compile in production mode
 
 # we set these env vars to test the db connection with psql
 export PGPASSWORD=Passw0Rd
@@ -136,7 +160,7 @@ Type "help" for help.
 blockscout=>
 ```
 
-Otherwise you might see an error like this:
+Otherwise, you might see an error like this:
 ```bash
 psql: error: FATAL:  password authentication failed for user "blockscout"
 FATAL:  password authentication failed for user "blockscout"
@@ -160,6 +184,25 @@ Now we finally get to start the Blockscout installation.
 ```bash
 cd ~
 git clone https://github.com/Trapesys/blockscout
+```
+
+### Generate secret key base to protect production build
+```bash
+cd blockscout
+mix deps.get
+mix local.rebar --force
+mix phx.gen.secret
+```
+At the very last line, you should see a long string of random characters.     
+This should be set as your `SECRET_KEY_BASE` environment variable, before the next step.     
+For example:
+```bash
+export SECRET_KEY_BASE="912X3UlQ9p9yFEBD0JU+g27v43HLAYl38nQzJGvnQsir2pMlcGYtSeRY0sSdLkV/"
+```
+
+### Set production mode
+```bash
+export MIX_ENV=prod
 ```
 
 ### Compile 
@@ -213,6 +256,9 @@ sudo mix phx.digest
 ```
 
 ### Generate self-signed certificates
+:::info
+You can skip this step if you won't use `https`.
+:::
 ```bash
 cd apps/block_scout_web
 mix phx.gen.cert blockscout blockscout.local
@@ -246,7 +292,7 @@ User=root
 StandardOutput=syslog
 StandardError=syslog
 WorkingDirectory=/usr/local/blockscout
-ExecStart=/usr/bin/mix phx.server
+ExecStart=/usr/local/bin/mix phx.server
 EnvironmentFile=/usr/local/blockscout/env_vars.env
 
 [Install]
@@ -276,7 +322,7 @@ sudo vi /usr/local/blockscout/env_vars.env
 ETHEREUM_JSONRPC_HTTP_URL="localhost:8545"  # json-rpc API of the chain
 ETHEREUM_JSONRPC_TRACE_URL="localhost:8545" # same as json-rpc API 
 DATABASE_URL='postgresql://blockscout:Passw0Rd@db.instance.local:5432/blockscout' # database connection from Step 2
-SECRET_KEY_BASE="LI/i2DqKx/ZQTGZeGUdi6dOjrDNsNDeqXjzc6sddNYrFLlIGERsK2TlTqCrsUf3p" # secret key base 
+SECRET_KEY_BASE="912X3UlQ9p9yFEBD0JU+g27v43HLAYl38nQzJGvnQsir2pMlcGYtSeRY0sSdLkV/" # secret key base 
 ETHEREUM_JSONRPC_WS_URL="ws://localhost:8545/ws" # websocket API of the chain
 CHAIN_ID=93201 # chain id
 HEART_COMMAND="systemctl restart explorer" # command used by blockscout to restart it self in case of failure
@@ -301,7 +347,7 @@ FETCH_REWARDS_WAY="manual" # disable trace_block query
 INDEXER_EMPTY_BLOCKS_SANITIZER_BATCH_SIZE=1000 # sanitize empty block in this batch size
 ```
 :::info
-In order to generate a new SECRET_KEY_BASE run  ***mix phx.gen.secret*** from blockscout folder.
+Use `SECRET_KEY_BASE` you've generated in Part 3.
 :::
 Save the file and exit.
 
@@ -338,6 +384,10 @@ tcp        0      0 0.0.0.0:4000            0.0.0.0:*               LISTEN      
 Blockscout web service runs the port and protocol defined in env file. In this example it runs on `4000`(http).   
 If everything is ok, you should be able to access the Blockscout web portal with `http://<host_ip>:4000`.
 
+## Considerations
+For best performance, it is advisable to have a dedicated/local `polygon-edge` full archive non-validator node 
+that will be used exclusively for Blockscout queries.    
+The `json-rpc` API of this node, doesn't need to be exposed publicly, as Blockscout runs all queries from the backend.
 
 
 ## Final thoughts
